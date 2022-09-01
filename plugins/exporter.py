@@ -8,12 +8,10 @@ def exporter(directory, method, datasets):
     if method.lower() == 'json':
         # Convert json_dict to a JSON styled string
         json_string = json.dumps(datasets, indent=4)
-        savefile = open('{}/exported.json'.format(directory), 'w+')
-        savefile.write(json_string)
-        savefile.close()
-
+        with open(f'{directory}/exported.json', 'w+') as savefile:
+            savefile.write(json_string)
     if method.lower() == 'csv':
-        with open('{}/exported.csv'.format(directory), 'w+') as csvfile:
+        with open(f'{directory}/exported.csv', 'w+') as csvfile:
             csv_writer = csv.writer(
                 csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
             for key, values in datasets.items():

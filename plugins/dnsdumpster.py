@@ -8,7 +8,9 @@ def dnsdumpster(domain, output_dir):
     """Query dnsdumpster.com."""
     response = requests.Session().get('https://dnsdumpster.com/').text
     csrf_token = re.search(
-        r'name=\"csrfmiddlewaretoken\" value=\"(.*?)\"', response).group(1)
+        r'name=\"csrfmiddlewaretoken\" value=\"(.*?)\"', response
+    )[1]
+
 
     cookies = {'csrftoken': csrf_token}
     headers = {'Referer': 'https://dnsdumpster.com/'}
@@ -16,7 +18,7 @@ def dnsdumpster(domain, output_dir):
     response = requests.Session().post(
         'https://dnsdumpster.com/', cookies=cookies, data=data, headers=headers)
 
-    image = requests.get('https://dnsdumpster.com/static/map/%s.png' % domain)
+    image = requests.get(f'https://dnsdumpster.com/static/map/{domain}.png')
     if image.status_code == 200:
-        with open('%s/%s.png' % (output_dir, domain), 'wb') as f:
+        with open(f'{output_dir}/{domain}.png', 'wb') as f:
             f.write(image.content)

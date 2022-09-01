@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 def regxy(pattern, response, supress_regex, custom):
     """Extract a string based on regex pattern supplied by user."""
     try:
-        matches = re.findall(r'%s' % pattern, response)
+        matches = re.findall(f'{pattern}', response)
         for match in matches:
             verb('Custom regex', match)
             custom.add(match)
@@ -40,8 +40,7 @@ def is_link(url, processed, files):
     if url not in processed:
         if url.startswith('#') or url.startswith('javascript:'):
             return False
-        is_file = url.endswith(BAD_TYPES)
-        if is_file:
+        if is_file := url.endswith(BAD_TYPES):
             files.add(url)
             return False
         return True
@@ -79,10 +78,10 @@ def writer(datasets, dataset_names, output_dir):
     """Write the results."""
     for dataset, dataset_name in zip(datasets, dataset_names):
         if dataset:
-            filepath = output_dir + '/' + dataset_name + '.txt'
+            filepath = f'{output_dir}/{dataset_name}.txt'
             with open(filepath, 'w+') as out_file:
                 joined = '\n'.join(dataset)
-                out_file.write(str(joined.encode('utf-8').decode('utf-8')))
+                out_file.write(joined.encode('utf-8').decode('utf-8'))
                 out_file.write('\n')
 
 
@@ -118,7 +117,7 @@ def xml_parser(response):
 def verb(kind, string):
     """Enable verbose output."""
     if VERBOSE:
-        print('%s %s: %s' % (info, kind, string))
+        print(f'{info} {kind}: {string}')
 
 
 def extract_headers(headers):
@@ -140,9 +139,7 @@ def extract_headers(headers):
 def top_level(url, fix_protocol=True):
     """Extract the top level domain from an URL."""
     ext = tld.get_tld(url, fix_protocol=fix_protocol)
-    toplevel = '.'.join(urlparse(url).netloc.split('.')[-2:]).split(
-        ext)[0] + ext
-    return toplevel
+    return '.'.join(urlparse(url).netloc.split('.')[-2:]).split(ext)[0] + ext
 
 
 def is_proxy_list(v, proxies):
@@ -155,7 +152,7 @@ def is_proxy_list(v, proxies):
                     proxies.append({"http": line,
                                     "https": line})
                 else:
-                    print("%s ignored" % line)
+                    print(f"{line} ignored")
         if proxies:
             return True
     return False

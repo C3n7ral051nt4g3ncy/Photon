@@ -61,10 +61,9 @@ def requester(
            'text/plain' in response.headers['content-type']:
             if response.status_code != '404':
                 return response.text
-            else:
-                response.close()
-                failed.add(url)
-                return 'dummy'
+            response.close()
+            failed.add(url)
+            return 'dummy'
         else:
             response.close()
             return 'dummy'
